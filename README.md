@@ -11,7 +11,6 @@
 - **워터 펌프**
 - **5 x 5 RGB LED**
 - **LCD (액정 디스플레이) 모듈**
----
 # 2. 센서 설명
 ## 2.1. 수분 센서
 *참고: 에듀이노 토양 탐침 수분센서 <https://eduino.kr/product/detail.html?product_no=4742&cate_no=27&display_group=1>*
