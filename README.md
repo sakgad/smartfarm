@@ -169,3 +169,36 @@ void loop() {
   }
 }
 ```
+## 3.2. 쿨링 팬
+*참고: 5V 쿨링 팬 모듈 <https://m.eduino.kr/product/detail.html?product_no=1260&cate_no=55&display_group=1>*
+
+환기를 위해 설치하는 쿨링 팬입니다. 추가적으로 릴레이 모듈을 사용해야 합니다.
+
+**사용 방법 및 주요 함수**
+
+> 참고의 사이트의 도안을 통해 릴레이 모듈과 쿨링 팬, 아두이노 보드를 정확히 연결해야 한다.
+>
+> 릴레이 모듈의 SIG 핀은 아두이노의 디지털 핀에 연결해야 한다.
+>
+> 연결된 핀의 번호를 이용해 digitalWrite()함수를 사용해 팬을 가동한다.
+
+**예제 코드**
+```
+int Relaypin = 12;
+int Switch = 9;
+ 
+void setup()
+{
+  pinMode(Relaypin,OUTPUT);          //릴레이를 출력으로 설정
+  pinMode(Switch,INPUT_PULLUP);      //스위치를 입력으로 설정
+}
+ 
+void loop()
+{
+  if(digitalRead(Switch)==LOW)        //스위치를 누르면
+  {
+    digitalWrite(Relaypin,HIGH);      //1채널 릴레이 ON
+    delay(100);
+  }
+```
+## 3.3. 
