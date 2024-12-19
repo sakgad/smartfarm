@@ -463,17 +463,15 @@ Blocks에서는 블럭 코딩을 통해 앱 기능을 구성할 수 있다. 스�
 #include <Adafruit_NeoPixel.h>
 #include <DHT.h>
 #include <SoftwareSerial.h>
+String bluetooth = "0";
 
-LiquidCrystal_I2C lcd(0x27,16, 2); //A4 to SDA, A5 to SCL
+LiquidCrystal_I2C lcd(0x27,16, 2); 
 Adafruit_NeoPixel RGB_LED = Adafruit_NeoPixel(25, 7, NEO_GRB);
-DHT dht(3, DHT22);
- 
+DHT dht(8, DHT22);
+
 void setup() {
   Serial.begin(9600);
   Serial1.begin(9600);
-
-  lcd.init();
-  lcd.backlight();
 
   RGB_LED.begin();
   RGB_LED.setBrightness(10);
@@ -483,11 +481,20 @@ void setup() {
 
   dht.begin();
 
-  pinMode(A0, INPUT);
-  pinMode(A1, INPUT);
+  lcd.init();
+  lcd.backlight();
+
   pinMode(2, OUTPUT);
-  pinMode(4, OUTPUT);  // AA를 출력 핀으로 설정
+  pinMode(3, OUTPUT);
+  pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
+  pinMode(6, OUTPUT);
+  pinMode(A0, INPUT);
+
+  digitalWrite(3, LOW);
+  digitalWrite(4, LOW);
+  digitalWrite(5, LOW);
+  digitalWrite(6, LOW);
 }
 
 byte j[] = {
@@ -675,77 +682,150 @@ void kirby() {
 
 void loop() {
   if (Serial1.available()) {
-    String cmd = Serial1.readStringUntil('/');
-    if (cmd == "fan on") {
+    bluetooth = Serial1.readStringUntil('/');
+    Serial.println(bluetooth);
+    if (bluetooth == "Temp") {
+      float temp =  dht.readTemperature();
+      String str_temp = String(temp, 1);
+      Serial1.print(str_temp);
+    }
+    else if (bluetooth == "Humid") { 
+      float humid =  dht.readHumidity();
+      String str_humid = String(humid, 1);
+      Serial1.print(str_humid);
+    }
+    else if (bluetooth == "Moist") { 
+      int moist =  analogRead(0);
+      String str_moist = String(moist);
+      Serial1.print(str_moist);
+    }
+    else if (bluetooth == "Light") { 
+      int light = analogRead(A1);
+      String str_light = String(light);
+      Serial1.print(str_light);
+    }
+    else if (bluetooth == "FanON") { 
       digitalWrite(2, HIGH);
     }
-    else if (cmd == "fan off") {
+    else if (bluetooth == "FanOFF") { 
       digitalWrite(2, LOW);
     }
-    else if (cmd == "jyh babo") {
-      jyh_babo();
+    else if (bluetooth == "WpON") { 
+      digitalWrite(3, HIGH);
     }
-    else if (cmd == "kirby") {
-      kirby();
+    else if (bluetooth == "WpOFF") { 
+      digitalWrite(3, LOW);
     }
-    else if (cmd == "shiny") {
-      RGB_LED.setBrightness(255);
-      RGB_LED.fill((255, 255, 255), 0, 0);
+    else if (bluetooth.startsWith("Nut")) { 
+      String nut = bluetooth.substring(3);
+      int int_nut = nut.toInt();
+      digitalWrite(5, HIGH);
+      delay(int_nut*1000);
+      digitalWrite(5, LOW);
+    }
+    else if (bluetooth == "Auto") { 
+      int a = 1;
+      while (a == 1) {
+        if (Serial1.available()) {
+          a = 0;
+        }
+        else {
+          int plant_moist;
+          plant_moist = analogRead(0);
+          if (plant_moist > 700) {
+            digitalWrite(3, HIGH);
+            delay(10000);
+            digitalWrite(3, LOW);
+          }
+        }
+        delay(1000);
+      }
+    }
+    else if (bluetooth.startsWith("LEDB")) { 
+      String ledbr = bluetooth.substring(4);
+      int int_ledbr = ledbr.toInt();
+      Serial.println(int_ledbr);
+      RGB_LED.setBrightness(int_ledbr);
       RGB_LED.show();
     }
-    else if (cmd == "rainbow") {
+    else if (bluetooth.startsWith("LEDQ")) {
+      String ledqu = bluetooth.substring(4);
+      int int_ledqu = ledqu.toInt();
+      Serial.println(int_ledqu);
+      for (int i = 24; i >= int_ledqu; i--) {
+        RGB_LED.setPixelColor(i, 0, 0, 0);
+        RGB_LED.show();
+        delay(100);
+      }
+    }
+    else if (bluetooth == "Red") {
+      RGB_LED.fill(RGB_LED.Color(255, 0, 0));
+      RGB_LED.show();
+    }
+    else if (bluetooth == "Green") {
+      RGB_LED.fill(RGB_LED.Color(0, 255, 0));
+      RGB_LED.show();
+    }
+    else if (bluetooth == "Blue") {
+      RGB_LED.fill(RGB_LED.Color(0, 0, 255));
+      RGB_LED.show();
+    }
+    else if (bluetooth == "White") {
+      RGB_LED.fill(RGB_LED.Color(255, 255, 255));
+      RGB_LED.show();
+    }
+    else if (bluetooth == "Rainbow") {
       RGB_LED.rainbow();
       RGB_LED.show();
     }
-    else if (cmd == "led off") {
+    else if (bluetooth == "Kirby") {
+      kirby();
+    }
+    else if (bluetooth == "Pink") {
+      RGB_LED.fill(RGB_LED.Color(255, 0, 255));
+      RGB_LED.show();
+    }
+    else if (bluetooth == "Eyebreaker") {
+      RGB_LED.setBrightness(255);
+      for (int j = 1; j <= 10; j++) {
+        RGB_LED.fill(RGB_LED.Color(255, 0, 0));
+        RGB_LED.show();
+        delay(100);
+        RGB_LED.fill(RGB_LED.Color(0, 0, 255));
+        RGB_LED.show();
+        delay(100);
+      }
+      RGB_LED.setBrightness(10);
+      RGB_LED.clear();
       RGB_LED.fill((0, 0, 0), 0, 0);
       RGB_LED.show();
     }
-    else if (cmd == "moist") {
-      int plant_moist;
-      plant_moist = analogRead(0);
-      if (plant_moist < 500) {
-        Serial1.write("물 충분!");
+    else if (bluetooth == "jyhbabo") {
+      jyh_babo();
+    }
+    else {
+      lcd.clear();
+      if (bluetooth.length() > 16) {
+        for (int k = 0; k <= 15; k++) {
+          lcd.setCursor(k, 0);
+          lcd.print(bluetooth.charAt(k));
+          delay(100);
+        }
+        for (int t = 0; t <= bluetooth.length() - 17; t++) {
+          lcd.setCursor(t, 1);
+          lcd.print(bluetooth.charAt(t + 16));
+          delay(100);
+        }
       }
       else {
-        Serial1.write("윤혁아 물줘라");
-      }
+          for (int q = 0; q < bluetooth.length() - 1; q++) {
+            lcd.setCursor(q, 0);
+            lcd.print(bluetooth.charAt(q));
+            delay(100);
+          }
+        }
     }
-    else if (cmd == "light") {
-      int CDS = analogRead(A1);
-      if (CDS > 600) {
-        Serial1.write("적당한 불빛");
-      }
-      else {
-        Serial1.write("실명 위기");
-      }
-    }
-    else if (cmd == "temp") {
-      float t = dht.readTemperature();
-      Serial1.print("Temperature: "); 
-      Serial1.print(t);
-      Serial1.println(" *C");
-    }
-    else if (cmd == "humid") {
-      float h = dht.readHumidity();
-      Serial1.print("Humidity: "); 
-      Serial1.print(h);
-      Serial1.print(" %\t");
-    }
-    else if (cmd == "water on") {
-      digitalWrite(4, HIGH);
-      digitalWrite(5, LOW);
-    }
-    else if (cmd == "water off") {
-      digitalWrite(4, LOW);
-      digitalWrite(5, LOW);
-    }
-    Serial.println(cmd);
-  }
-
-  if (Serial.available()) {
-    Serial1.write(Serial.read());
-    Serial.write("\n");
+    delay(1000);
   }
 }
 ```
