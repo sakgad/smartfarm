@@ -201,4 +201,551 @@ void loop()
     delay(100);
   }
 ```
-## 3.3. 
+## 3.3. 워터 펌프
+*참고: 워터펌프 3 ~ 5V <https://www.eduino.kr/product/detail.html?product_no=984&cate_no=55&display_group=1>*
+
+물을 끌어오는 펌프입니다. 실리콘튜브와 함께 사용합니다.
+
+**사용 방법 및 주요 함수**
+
+> 펌프가 많이 약함;;
+>
+> 모터 드라이버를 이용해야 쉽게 사용할 수 있다. (2채널 모터 드라이버 사용)
+
+**예제 코드**
+```
+int AA = 10;  // AA를 연결한 디지털 핀
+int AB = 6;   // AB를 연결한 디지털 핀
+ 
+void setup()
+{
+  pinMode(AA, OUTPUT);  // AA를 출력 핀으로 설정
+  pinMode(AB, OUTPUT);  // AB를 출력 핀으로 설정
+}
+ 
+void loop()
+{
+  digitalWrite(AA, HIGH);  // 정방향으로 모터 회전
+  digitalWrite(AB, LOW);
+  delay(5000);  // 5초동안 상태 유지(1000ms = 5s)
+ 
+  digitalWrite(AA, LOW);  // 모터 정지
+  digitalWrite(AB, LOW);
+  delay(5000);  // 5초동안 상태 유지(1000ms = 5s)
+}
+```
+## 3.4. 5 x 5 RGB LED
+*참고: 네오픽셀 5x5 RGB LED <https://www.eduino.kr/product/detail.html?product_no=609&cate_no=55&display_group=1>*
+
+RGB를 지원하는 5 x 5 LED입니다.
+
+**사용 방법 및 주요 함수**
+
+> Adafruit NeoPixel Library가 필요하다.
+>
+> 멤버 함수는 이곳에서 확인하면 된다; <https://adafruit.github.io/Adafruit_NeoPixel/html/class_adafruit___neo_pixel.html>
+>
+> 먼저 1번 ~ 25번 LED가 어디가 켜지는지 확인하자.
+>
+> 회로는 LED와 비슷하게 연결할 수 있다.
+
+**예제 코드**
+```
+#include <Adafruit_NeoPixel.h>
+Adafruit_NeoPixel RGB_LED = Adafruit_NeoPixel(25, 13, NEO_GRB);  // 픽셀수 : 25, 핀번호 : 13으로 지정해줍니다.
+ 
+void setup() {
+  RGB_LED.begin();            // RGB_LED 불러옵니다.
+  RGB_LED.setBrightness(100); // RGB_LED 밝기조절
+  RGB_LED.clear();            // RGB_LED 초기화합니다.
+}
+ 
+void loop() {
+  RGB_LED.setPixelColor(2, 255, 0, 50);   // 2번 네오픽셀에 색상을 출력합니다.
+  RGB_LED.show();
+  RGB_LED.setPixelColor(3, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(5, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(6, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(7, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(8, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(10, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(11, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(12, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(13, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(15, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(16, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(17, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(18, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(22, 255, 0, 50);
+  RGB_LED.show();
+  RGB_LED.setPixelColor(23, 255, 0, 50);
+  RGB_LED.show();
+}
+```
+
+## 3.4. LCD (액정 디스플레이) 모듈
+*참고: <https://www.eduino.kr/product/detail.html?product_no=105&cate_no=55&display_group=1>*
+
+16 x 2, 32칸만큼 문자를 출력할 수 있는 액정 디스플레이 모듈입니다.
+
+**사용 방법 및 주요 함수**
+
+> LiquidCrystal 라이브러리가 필요하다.
+>
+> 뒤에 있는 저항 조절기를 통해 디스플레이의 밝기를 조절할 수 있다.
+>
+> 한글 지원은 안됀다.
+>
+> 직접 글자를 제작할 수 있지만 등록가능한 글자는 8가지 밖에 만들 수 없다.
+
+**예제 코드**
+```
+#include <Wire.h>                        // i2C 통신을 위한 라이브러리
+#include <LiquidCrystal_I2C.h>        // LCD 1602 I2C용 라이브러리
+ 
+LiquidCrystal_I2C lcd(0x27,16,2);     // 접근주소: 0x3F or 0x27
+ 
+byte pac_man1[8] = {     // 팩맨 출력 입벌림, 얼굴방향 오른쪽
+  0b01110,
+  0b11011,
+  0b11110,
+  0b11100,
+  0b11100,
+  0b11110,
+  0b11111,
+  0b01110,
+};
+byte pac_man2[8] = {     // 팩맨 출력 입닫음, 얼굴방향 오른쪽
+  0b01110,
+  0b11011,
+  0b11111,
+  0b11111,
+  0b11100,
+  0b11111,
+  0b11111,
+  0b01110,
+};
+ 
+byte pac_man3[8] = {     // 팩맨 출력 입벌림,  얼굴방향 왼쪽
+  0b01110,
+  0b11011,
+  0b01111,
+  0b00111,
+  0b00111,
+  0b01111,
+  0b11111,
+  0b01110,
+};
+byte pac_man4[8] = {     // 팩맨 출력 입닫음,  얼굴방향 왼쪽
+  0b01110,
+  0b11011,
+  0b11111,
+  0b11111,
+  0b00111,
+  0b11111,
+  0b11111,
+  0b01110,
+};
+ 
+void setup()
+{
+  lcd.init();                      // LCD 초기화
+  lcd.backlight();                // 백라이트 켜기
+  lcd.createChar(1, pac_man1);    // 팩맨 얼굴1
+  lcd.createChar(2, pac_man2);    // 팩맨 얼굴2
+  lcd.createChar(3, pac_man3);    // 팩맨 얼굴3
+  lcd.createChar(4, pac_man4);    // 팩맨 얼굴4
+  
+}
+void loop(){
+  for(int first_line=0; first_line<16; first_line++){     // 첫번째 줄
+    if(first_line == 0){        // 프로그램 처음 실행 시
+      
+      lcd.setCursor(0, 0);  // 커서 위치 0,0    첫번째 줄
+      lcd.write(byte(1));       // 팩맨 얼굴 출력
+ 
+      lcd.setCursor(1, 0);    // 커서 위치 1,0    첫번째 줄
+      lcd.print("Hello, Eduino!!");// Hello, Eduino!! 출력        
+            
+      lcd.setCursor(0, 1);    // 커서 위치 0,1    두번째 줄
+      lcd.print("Have a nice day!");  // Have a nice day! 출력
+    }
+    else {
+      for(int blank = 0; blank < first_line; blank++){  // 팩맨이 지나온 길을 빈칸으로 만들기
+        lcd.setCursor(blank, 0);  // 빈칸
+        lcd.print(" ");
+      }
+      int place = first_line;  // fisrt_line 변화를 막기 위해 place 변수 만듦
+      lcd.setCursor(place++, 0);  // 팩맨 한칸씩 이동
+      if(place % 2 == 1)
+        lcd.write(byte(1));     // 팩맨 1
+      else 
+        lcd.write(byte(2));     // 팩맨 2    
+    }
+    delay(500);
+  }
+  for(int second_line = 15; second_line >= 0; second_line --){      // 팩맨 오른쪽부터 시작
+    if(second_line == 15){    // for문 맨 처음 시작 시
+      for(int blank = 0; blank < 16; blank++){  // 첫번째 줄 모두 다 빈칸으로 만들기
+        lcd.setCursor(blank, 0);  // 빈칸
+        lcd.print(" ");
+      }
+      lcd.setCursor(15, 1); // 맨 오른쪽에 팩맨 위치
+      lcd.write(byte(3));      
+    }
+    else {
+      for(int blank = 15; blank >= second_line; blank--){ // 팩맨이 지나온 길 빈칸으로
+        lcd.setCursor(blank, 1);  // 빈칸
+        lcd.print(" ");
+      }
+      int place = second_line;   // second_line 변화를 막기 위해 place 변수 만듦
+      lcd.setCursor(place++, 1);  // 팩맨 한칸씩 이동
+      if(place % 2 == 0)
+        lcd.write(byte(3)); // 팩맨3
+      else 
+        lcd.write(byte(4));     // 팩맨4
+    }
+    delay(500);
+  }
+}
+```
+# 4. 앱 개발
+앱에서는 블루투스 통신과 더불어 직접 디자인을 해야하므로
+
+MIT에서 제작한 앱 제작 웹사이트인 MIT App Inventor를 사용할 것이다. (안드로이드, 아이폰 모두 호환됨)
+
+다음의 사이트를 방문해 왼쪽 위의 Create Apps! 버튼을 눌러 앱을 제작해보자.
+
+<https://appinventor.mit.edu/>
+
+## 4.1. 사용법
+
+구글에 로그인을 한 후 새 프로제트를 제작할 수 있다.
+
+새 프로젝트를 만들면 제작 화면이 뜬다.
+
+왼쪽은 Palette로 UI(버튼, 사진 등)나 요소(블루투스, 시간, 등)을 추가 할 수 있다.
+
+가운데는 Viewer로 현재 제작중인 앱의 모습을 확인 할 수 있다.
+
+오른쪽은 All Compoments와 Expertise로 어떤 Component(객체 비슷한거)를 추가했는지와 Component 관리, Component의 속성에 대한 편집을 할 수 있다.
+
+앱 디자인은 딱히 설명할 건 없고 직접 여러 버튼 눌러보면서 테스트하거나 인터넷 검색해보면 잘 나와있다. 이쁘게 만들어보자.
+
+마지막으로 오른쪽 위에 Designer와 Blocks가 있는 버튼이 있는데, Blocks버튼을 누르면 스크래치 비슷한 제작 화면을 넘어가게 된다.
+
+Blocks에서는 블럭 코딩을 통해 앱 기능을 구성할 수 있다. 스크래치와 비슷해서 배우기 쉬우니 직접 해보면서 익히길 바란다.
+
+**단, 블루투스 통신 관련 코드는 까다로우니 아래 링크에서 프로젝트 파일 Yunheok_Smartfarm.aia를 받아 참고하면 된다. 이외에도 블루투스 관련 Component를 넣어야 한다.**
+
+<https://drive.google.com/file/d/100BV83oa5OIaIOZzSGntIrogKpahS99w/view?usp=drive_link>
+
+# 5. 예시 자료
+전에 직접 제작했던 스마트팜 코드이다.
+
+제작할 때 느꼈던 점으로 코드 짜는데에는 크게 까다로운건 없었고 if-else if문만 잘 이용해도 쉽게 제작할 수 있었다. (그러니까 직접 짜보자)
+```
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+#include <Adafruit_NeoPixel.h>
+#include <DHT.h>
+#include <SoftwareSerial.h>
+
+LiquidCrystal_I2C lcd(0x27,16, 2); //A4 to SDA, A5 to SCL
+Adafruit_NeoPixel RGB_LED = Adafruit_NeoPixel(25, 7, NEO_GRB);
+DHT dht(3, DHT22);
+ 
+void setup() {
+  Serial.begin(9600);
+  Serial1.begin(9600);
+
+  lcd.init();
+  lcd.backlight();
+
+  RGB_LED.begin();
+  RGB_LED.setBrightness(10);
+  RGB_LED.clear();
+  RGB_LED.fill((0, 0, 0), 0, 0);
+  RGB_LED.show();
+
+  dht.begin();
+
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(2, OUTPUT);
+  pinMode(4, OUTPUT);  // AA를 출력 핀으로 설정
+  pinMode(5, OUTPUT);
+}
+
+byte j[] = {
+  0b00000,
+  0b11111,
+  0b00010,
+  0b00100,
+  0b01010,
+  0b10001,
+  0b00000,
+  0b00000,
+};
+
+byte u[] = {
+  0b00000,
+  0b01000,
+  0b01000,
+  0b01000,
+  0b11000,
+  0b01000,
+  0b01000,
+  0b01000,
+};
+
+byte ng[] = {
+  0b01110,
+  0b11011,
+  0b10001,
+  0b11011,
+  0b01110,
+  0b00000,
+  0b00000,
+  0b00000,
+};
+
+byte y[] = {
+  0b00000,
+  0b01110,
+  0b11011,
+  0b10001,
+  0b11011,
+  0b01110,
+  0b00000,
+  0b00000,
+};
+
+byte oon[] = {
+  0b11111,
+  0b01010,
+  0b00000,
+  0b10000,
+  0b11111,
+  0b00000,
+  0b00000,
+  0b00000
+};
+
+byte h[] = {
+  0b00100,
+  0b11111,
+  0b00000,
+  0b01110,
+  0b11011,
+  0b10001,
+  0b11011,
+  0b01110,
+};
+
+byte yeo[] = {
+  0b00000,
+  0b01000,
+  0b01000,
+  0b11000,
+  0b01000,
+  0b11000,
+  0b01000,
+  0b01000,
+};
+
+byte k[] = {
+  0b00000,
+  0b11111,
+  0b00001,
+  0b00001,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+};
+
+byte b[] = {
+  0b00000,
+  0b10001,
+  0b10001,
+  0b11111,
+  0b10001,
+  0b11111,
+  0b00000,
+  0b00000,
+};
+
+byte a[] = {
+  0b00000,
+  0b01000,
+  0b01000,
+  0b01000,
+  0b01100,
+  0b01000,
+  0b01000,
+  0b01000,
+};
+
+byte o[] = {
+  0b00100,
+  0b11111,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b00000,
+};
+
+void jyh_babo() {
+  lcd.createChar(1, j);
+  lcd.createChar(2, u);
+  lcd.createChar(3, ng);
+  lcd.createChar(4, y);
+  lcd.createChar(5, oon);
+  lcd.createChar(6, h);
+  lcd.createChar(7, yeo);
+  lcd.createChar(8, k);
+  lcd.createChar(1, j);
+  lcd.createChar(2, u);
+  lcd.createChar(3, ng);
+  lcd.setCursor(0, 0);
+  lcd.write(byte(1));
+  lcd.setCursor(1, 0);
+  lcd.write(byte(2));
+  lcd.setCursor(0, 1);
+  lcd.write(byte(3));
+  lcd.setCursor(2, 0);
+  lcd.write(byte(4));
+  lcd.setCursor(2, 1);
+  lcd.write(byte(5));
+  lcd.setCursor(3, 0);
+  lcd.write(byte(6));
+  lcd.setCursor(4, 0);
+  lcd.write(byte(7));
+  lcd.setCursor(3, 1);
+  lcd.write(byte(8));
+  delay(1000);
+  lcd.clear();
+  lcd.createChar(1, b);
+  lcd.createChar(2, a);
+  lcd.createChar(3, o);
+  lcd.setCursor(5, 0);
+  lcd.write(byte(1));
+  lcd.setCursor(6, 0);
+  lcd.write(byte(2));
+  lcd.setCursor(7, 0);
+  lcd.write(byte(1));
+  lcd.setCursor(7, 1);
+  lcd.write(byte(3));
+  delay(1000);
+  lcd.clear();
+}
+
+void kirby() {
+  RGB_LED.setBrightness(10);
+  for (int i = 0; i < 5; i++) {
+    for (int j = 0; j < 4; j++) {
+      if(i % 2 != 1) RGB_LED.setPixelColor(5 * i + j, 255, 0, 80);
+      else RGB_LED.setPixelColor(5 * (i + 1) - 1 - j, 255, 0, 80);
+    }
+  }
+  RGB_LED.setPixelColor(4, 200, 0, 0);
+  RGB_LED.setPixelColor(5, 200, 0, 0);
+  RGB_LED.setPixelColor(15, 200, 0, 0);
+  RGB_LED.setPixelColor(24, 200, 0, 0);
+  RGB_LED.setPixelColor(8, 30, 30, 30);
+  RGB_LED.setPixelColor(18, 30, 30, 30);
+  RGB_LED.show();
+}
+
+void loop() {
+  if (Serial1.available()) {
+    String cmd = Serial1.readStringUntil('/');
+    if (cmd == "fan on") {
+      digitalWrite(2, HIGH);
+    }
+    else if (cmd == "fan off") {
+      digitalWrite(2, LOW);
+    }
+    else if (cmd == "jyh babo") {
+      jyh_babo();
+    }
+    else if (cmd == "kirby") {
+      kirby();
+    }
+    else if (cmd == "shiny") {
+      RGB_LED.setBrightness(255);
+      RGB_LED.fill((255, 255, 255), 0, 0);
+      RGB_LED.show();
+    }
+    else if (cmd == "rainbow") {
+      RGB_LED.rainbow();
+      RGB_LED.show();
+    }
+    else if (cmd == "led off") {
+      RGB_LED.fill((0, 0, 0), 0, 0);
+      RGB_LED.show();
+    }
+    else if (cmd == "moist") {
+      int plant_moist;
+      plant_moist = analogRead(0);
+      if (plant_moist < 500) {
+        Serial1.write("물 충분!");
+      }
+      else {
+        Serial1.write("윤혁아 물줘라");
+      }
+    }
+    else if (cmd == "light") {
+      int CDS = analogRead(A1);
+      if (CDS > 600) {
+        Serial1.write("적당한 불빛");
+      }
+      else {
+        Serial1.write("실명 위기");
+      }
+    }
+    else if (cmd == "temp") {
+      float t = dht.readTemperature();
+      Serial1.print("Temperature: "); 
+      Serial1.print(t);
+      Serial1.println(" *C");
+    }
+    else if (cmd == "humid") {
+      float h = dht.readHumidity();
+      Serial1.print("Humidity: "); 
+      Serial1.print(h);
+      Serial1.print(" %\t");
+    }
+    else if (cmd == "water on") {
+      digitalWrite(4, HIGH);
+      digitalWrite(5, LOW);
+    }
+    else if (cmd == "water off") {
+      digitalWrite(4, LOW);
+      digitalWrite(5, LOW);
+    }
+    Serial.println(cmd);
+  }
+
+  if (Serial.available()) {
+    Serial1.write(Serial.read());
+    Serial.write("\n");
+  }
+}
+```
